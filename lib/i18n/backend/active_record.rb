@@ -34,7 +34,7 @@ module I18n
           result = Translation.locale(locale).lookup(key)
 
           if result.empty?
-            nil
+            raise I18n::MissingTranslationData.new(locale, key, options)
           elsif result.first.key == key
             result.first.value
           else
