@@ -36,18 +36,20 @@ module I18n
         include Flatten
 
         def store_default_translations(locale, key, options = {})
-          count, scope, default, separator = options.values_at(:count, :scope, :default, :separator)
+          count, scope, default, separator, default_locale = options.values_at(:count, :scope, :default, :separator, :default_locale)
           separator ||= I18n.default_separator
+          default_locale ||= I18n.default_locale
           key = normalize_flat_keys(locale, key, scope, separator)
 
           unless ActiveRecord::Translation.locale(locale).lookup(key).exists?
             interpolations = options.keys - I18n::RESERVED_KEYS
             keys = count ? I18n.t('i18n.plural.keys', :locale => locale).map { |k| [key, k].join(FLATTEN_SEPARATOR) } : [key]
             keys.each { |key|
-              store_default_translation(I18n.default_locale, key, interpolations, default) unless ActiveRecord::Translation.locale(I18n.default_locale).lookup(key).exists?
-              store_default_translation(locale, key, interpolations, nil) if locale.to_sym != I18n.default_locale.to_sym
+              store_default_translation(default_locale, key, interpolations, default) unless ActiveRecord::Translation.locale(default_locale).lookup(key).exists?
+              store_default_translation(locale, key, interpolations, nil) if locale.to_sym != default_locale.to_sym
             }
           end
+          default_locale
         end
 
         def store_default_translation(locale, key, interpolations, default)
@@ -59,8 +61,8 @@ module I18n
         def translate(locale, key, options = {})
           super
         rescue I18n::MissingTranslationData => e
-          self.store_default_translations(locale, key, options)
-          super I18n.default_locale, key, options
+          l = self.store_default_translations(locale, key, options)
+          super l, key, options
         end
       end
     end
