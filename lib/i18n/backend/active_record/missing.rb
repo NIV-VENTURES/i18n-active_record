@@ -47,6 +47,7 @@ module I18n
             keys.each { |key|
               store_default_translation(default_locale, key, interpolations, default) unless ActiveRecord::Translation.locale(default_locale).lookup(key).exists?
               store_default_translation(locale, key, interpolations, nil) if locale.to_sym != default_locale.to_sym
+              store_default_translation(I18n.default_locale, key, interpolations, nil) if I18n.default_locale.to_sym != default_locale.to_sym
             }
           end
           default_locale
