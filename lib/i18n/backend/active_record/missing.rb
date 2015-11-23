@@ -54,7 +54,8 @@ module I18n
         end
 
         def store_default_translation(locale, key, interpolations, default)
-          translation = ActiveRecord::Translation.new :locale => locale.to_s, :key => key, :value => default
+          translation = ActiveRecord::Translation.where(:locale => locale.to_s, :key => key).first_or_initialize
+          translation.value = default
           translation.interpolations = interpolations
           translation.save
         end
