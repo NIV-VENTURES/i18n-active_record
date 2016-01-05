@@ -43,7 +43,8 @@ module I18n
 
           unless ActiveRecord::Translation.locale(locale).lookup(key).exists?
             interpolations = options.keys - I18n::RESERVED_KEYS - [:default_locale]
-            keys = count ? I18n.t('i18n.plural.keys', :locale => locale).map { |k| [key, k].join(FLATTEN_SEPARATOR) } : [key]
+            plural = I18n.t('i18n.plural.keys', :locale => locale)
+            keys = count && plural.is_a?(Array) ? plural.map { |k| [key, k].join(FLATTEN_SEPARATOR) } : [key]
             keys.each { |key|
               store_default_translation(default_locale, key, interpolations, default) unless ActiveRecord::Translation.locale(default_locale).lookup(key).exists?
               store_default_translation(locale, key, interpolations, nil) if locale.to_sym != default_locale.to_sym
