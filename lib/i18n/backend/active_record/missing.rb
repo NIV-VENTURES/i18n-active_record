@@ -56,9 +56,15 @@ module I18n
 
         def store_default_translation(locale, key, interpolations, default)
           translation = ActiveRecord::Translation.where(:locale => locale.to_s, :key => key).first_or_initialize
-          translation.value = default.is_a?(Array) ? default.reject(&:blank?).first.to_s : default.to_s
+          translation.value = cleanup_default(default)
           translation.interpolations = interpolations
           translation.save
+        end
+
+        def cleanup_default default
+          value = default.is_a?(Array) ? default.first : default
+          return nil unless value.is_a?(String)
+          value.to_s
         end
 
         def translate(locale, key, options = {})
