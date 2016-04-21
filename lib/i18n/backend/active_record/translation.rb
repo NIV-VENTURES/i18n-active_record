@@ -54,6 +54,8 @@ module I18n
         serialize :value
         serialize :interpolations, Array
 
+        after_save :clear_cache
+
         class << self
           def locale(locale)
             where(:locale => locale.to_s)
@@ -105,6 +107,12 @@ module I18n
 
           write_attribute(:value, value)
         end
+      end
+
+      def clear_cache
+        caching = I18n.perform_caching? rescue false
+        return unless caching?
+        I18n.cache_store.delete_matched("i18n/*")
       end
     end
   end
