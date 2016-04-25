@@ -56,7 +56,7 @@ module I18n
 
         after_save do
           caching = I18n.perform_caching? rescue false
-          return unless caching?
+          return unless caching
           I18n.cache_store.delete_matched("i18n/*")
         end
 
