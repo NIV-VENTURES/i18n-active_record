@@ -54,11 +54,11 @@ module I18n
         serialize :value
         serialize :interpolations, Array
 
-        after_save do
-          caching = I18n.perform_caching? rescue false
-          return unless caching
-          I18n.cache_store.delete_matched("i18n/*")
-        end
+        # after_save do
+        #   caching = I18n.perform_caching? rescue false
+        #   return unless caching
+        #   I18n.cache_store.delete_matched("i18n/*")
+        # end
 
         class << self
           def locale(locale)
