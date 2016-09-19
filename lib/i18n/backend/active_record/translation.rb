@@ -107,7 +107,7 @@ module I18n
             value = TRUTHY_CHAR
           end
 
-          # value = value.first if value.is_a?(Array)
+          value = value.first if value.is_a?(Array)
 
           write_attribute(:value, value)
         end

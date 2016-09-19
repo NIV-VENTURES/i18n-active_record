@@ -62,7 +62,6 @@ module I18n
         end
 
         def cleanup_default default
-          return default
           value = default.is_a?(Array) ? default.first : default
           return nil unless value.is_a?(String)
           value.to_s
